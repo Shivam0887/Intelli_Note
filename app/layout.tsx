@@ -8,6 +8,8 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Provider from "@/trpc/provider";
+import ReduxProvider from "@/components/providers/redux-provider";
+import ModalProvider from "@/components/providers/modal-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +38,12 @@ export default function RootLayout({
             storageKey="Note-theme"
           >
             <Toaster position="top-right" />
-            <Provider>{children}</Provider>
+            <Provider>
+              <ReduxProvider>
+                <ModalProvider />
+                {children}
+              </ReduxProvider>
+            </Provider>
           </ThemeProvider>
         </ClerkProvider>
       </body>

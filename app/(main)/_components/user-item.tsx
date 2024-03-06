@@ -10,10 +10,20 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { SignOutButton, useUser } from "@clerk/nextjs";
-import { ChevronsLeftRight, User2 } from "lucide-react";
+import { ChevronsLeftRight, Loader2, User2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const UserItem = () => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
+
+  if (!isLoaded) {
+    return (
+      <div className="max-w-max mx-auto my-2">
+        <Loader2 className="w-4 h-4 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <DropdownMenu>
@@ -61,7 +71,9 @@ const UserItem = () => {
           asChild
           className="w-full text-xs font-medium ml-2 cursor-pointer text-muted-foreground"
         >
-          <SignOutButton>Log out</SignOutButton>
+          <SignOutButton signOutCallback={() => router.push("/")}>
+            Log out
+          </SignOutButton>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

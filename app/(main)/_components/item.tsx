@@ -30,7 +30,7 @@ type ItemsProps = {
   isSearch?: boolean;
   level?: number;
   onExpand?: () => void;
-  onClick: () => void;
+  onClick?: () => void;
   label: string;
   icon: LucideIcon;
 };
@@ -120,7 +120,7 @@ const Item = ({
       {!!id && (
         <div
           role="button"
-          className="rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 mr-1"
+          className="rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mx-1"
           onClick={handleExpand}
         >
           <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
@@ -153,7 +153,7 @@ const Item = ({
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-60"
+              className="w-60 dark:bg-neutral-900"
               align="start"
               side="right"
               forceMount

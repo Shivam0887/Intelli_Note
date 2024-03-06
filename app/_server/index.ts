@@ -1,11 +1,23 @@
 import { router } from "./trpc";
 import { authCallback } from "./routes";
-import { create, getSidebar, archieve } from "./routes/documents";
+import {
+  create,
+  getSidebar,
+  archieve,
+  getTrash,
+  remove,
+  restore,
+  getSearch,
+} from "./routes/documents";
 
 const documentRouter = router({
   create,
   getSidebar,
   archieve,
+  getTrash,
+  remove,
+  restore,
+  getSearch,
 });
 
 // appRouter instance

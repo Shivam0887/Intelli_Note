@@ -8,26 +8,43 @@ import {
   PlusCircle,
   Search,
   Settings,
+  Trash,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { ElementRef, useEffect, useRef, useState } from "react";
-import { useMediaQuery } from "usehooks-ts";
-import UserItem from "./user-item";
-import { trpc } from "@/trpc/client";
-import Item from "./item";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 import { toast } from "sonner";
+
+import Item from "./item";
+import UserItem from "./user-item";
+import Trashbox from "./trash-box";
 import DocumentList from "./documentList";
 
+import { trpc } from "@/trpc/client";
+import { useMediaQuery } from "usehooks-ts";
+
+import { usePathname } from "next/navigation";
+import { ElementRef, useEffect, useRef, useState } from "react";
+
+import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
+
 const Navigation = () => {
+  const { onOpen } = useSearch();
+  const { onOpen: openSettings } = useSettings();
+
   const pathName = usePathname();
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  const isResizingRef = useRef(false);
-  const sidebarRef = useRef<ElementRef<"aside">>(null);
-  const navbarRef = useRef<ElementRef<"div">>(null);
+  const isResizingRef = useRef(false); // Is sidebar resizing?
+  const sidebarRef = useRef<ElementRef<"aside">>(null); // Controlling the sidebar - e.g. width
+  const navbarRef = useRef<ElementRef<"div">>(null); // Controlling the sidebar after collapsing
 
-  const [isResetting, setIsResetting] = useState(false);
+  const [isResetting, setIsResetting] = useState(false); // resetting the width of the sidebar to its original width
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const utils = trpc.useUtils();
@@ -49,6 +66,7 @@ const Navigation = () => {
     }
   }, [isMobile, pathName]);
 
+  // Invoked on document creation
   const onCreate = () => {
     const promise = mutateAsync({ title: "Untitled" });
     toast.promise(promise, {
@@ -58,18 +76,15 @@ const Navigation = () => {
     });
   };
 
+  // On pointer move - resizing the width of the sidebar
   const handlePointerMove = (e: PointerEvent) => {
     if (!isResizingRef.current) return;
 
     const newWidth = Math.min(Math.max(e.clientX, 240), 480);
 
     if (sidebarRef.current && navbarRef.current) {
-      sidebarRef.current.style.width = `${newWidth}px`;
-      navbarRef.current.style.setProperty("left", `${newWidth}px`);
-      navbarRef.current.style.setProperty(
-        "width",
-        `calc(100% - ${newWidth}px)`
-      );
+      sidebarRef.current.style.width = `${newWidth}px`; // Calculating the new width of the sidebar
+      navbarRef.current.style.setProperty("left", `${newWidth}px`); // changing the position of the hamburger icon in accordance with the sidebar width
     }
   };
 
@@ -94,10 +109,6 @@ const Navigation = () => {
       setIsResetting(true);
 
       sidebarRef.current.style.width = isMobile ? "100%" : "240px";
-      navbarRef.current.style.setProperty(
-        "width",
-        isMobile ? "0px" : "calc(100% - 240px)"
-      );
       navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
 
       setTimeout(() => setIsResetting(false), 300);
@@ -110,7 +121,6 @@ const Navigation = () => {
       setIsResetting(true);
 
       sidebarRef.current.style.width = "0px";
-      navbarRef.current.style.setProperty("width", "100%");
       navbarRef.current.style.setProperty("left", "0px");
 
       setTimeout(() => setIsResetting(false), 300);
@@ -142,18 +152,26 @@ const Navigation = () => {
 
         <div>
           <UserItem />
-          <Item label="Search" icon={Search} isSearch onClick={() => {}} />
-          <Item label="Settings" icon={Settings} onClick={() => {}} />
+          <Item label="Search" icon={Search} isSearch onClick={onOpen} />
+          <Item label="Settings" icon={Settings} onClick={openSettings} />
           <Item onClick={() => onCreate()} label="New page" icon={PlusCircle} />
         </div>
 
         <div className="mt-4">
           <DocumentList />
-          <Item
-           onClick={onCreate}
-           label="Add a page"
-           icon={Plus}
-          />
+          <Item onClick={onCreate} label="Add a page" icon={Plus} />
+
+          <Popover>
+            <PopoverTrigger className="w-full mt-4">
+              <Item label="Trash" icon={Trash} />
+            </PopoverTrigger>
+            <PopoverContent
+              side={isMobile ? "bottom" : "right"}
+              className="p-1 w-72 dark:bg-neutral-900"
+            >
+              <Trashbox />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div
@@ -165,9 +183,9 @@ const Navigation = () => {
 
       <div
         ref={navbarRef}
-        className={cn("absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]", {
+        className={cn("absolute top-0 z-[99999] left-60", {
           "transition-all ease-in-out": isResetting,
-          "left-0 w-full": isMobile,
+          "left-0": isMobile,
         })}
       >
         <nav className="bg-transparent p-3 w-full">
