@@ -26,17 +26,19 @@ import DocumentList from "./documentList";
 import { trpc } from "@/trpc/client";
 import { useMediaQuery } from "usehooks-ts";
 
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
+import { Navbar } from "./navbar";
 
 const Navigation = () => {
   const { onOpen } = useSearch();
   const { onOpen: openSettings } = useSettings();
 
   const pathName = usePathname();
+  const params = useParams();
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -85,6 +87,7 @@ const Navigation = () => {
     if (sidebarRef.current && navbarRef.current) {
       sidebarRef.current.style.width = `${newWidth}px`; // Calculating the new width of the sidebar
       navbarRef.current.style.setProperty("left", `${newWidth}px`); // changing the position of the hamburger icon in accordance with the sidebar width
+      navbarRef.current.style.width = `calc(100% - ${newWidth}px)`;
     }
   };
 
@@ -110,6 +113,7 @@ const Navigation = () => {
 
       sidebarRef.current.style.width = isMobile ? "100%" : "240px";
       navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
+      navbarRef.current.style.width = isMobile ? "0px" : "calc(100% - 240px)";
 
       setTimeout(() => setIsResetting(false), 300);
     }
@@ -122,6 +126,7 @@ const Navigation = () => {
 
       sidebarRef.current.style.width = "0px";
       navbarRef.current.style.setProperty("left", "0px");
+      navbarRef.current.style.width = "100%";
 
       setTimeout(() => setIsResetting(false), 300);
     }
@@ -183,16 +188,24 @@ const Navigation = () => {
 
       <div
         ref={navbarRef}
-        className={cn("absolute top-0 z-[99999] left-60", {
+        className={cn("absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]", {
           "transition-all ease-in-out": isResetting,
-          "left-0": isMobile,
+          "left-0 w-full": isMobile,
         })}
       >
-        <nav className="bg-transparent p-3 w-full">
-          {isCollapsed && (
-            <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6" />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent p-3 w-full">
+            {isCollapsed && (
+              <MenuIcon
+                onClick={resetWidth}
+                role="button"
+                className="h-5 w-5 md:h-6 md:w-6"
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );

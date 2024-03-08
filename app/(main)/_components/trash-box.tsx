@@ -20,7 +20,7 @@ const Trashbox = () => {
   const { mutateAsync: restore } = trpc.documents.restore.useMutation({
     onSettled: () => {
       utils.invalidate(undefined, {
-        queryKey: [["documents", "sidebar"], { type: "query" }],
+        queryKey: [["documents", "getSidebar"], { type: "query" }],
       });
     },
   });

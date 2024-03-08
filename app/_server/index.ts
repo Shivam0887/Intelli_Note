@@ -8,6 +8,8 @@ import {
   remove,
   restore,
   getSearch,
+  getById,
+  update,
 } from "./routes/documents";
 
 const documentRouter = router({
@@ -18,6 +20,8 @@ const documentRouter = router({
   remove,
   restore,
   getSearch,
+  getById,
+  update,
 });
 
 // appRouter instance

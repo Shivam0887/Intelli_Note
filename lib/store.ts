@@ -1,16 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import modalReducer from "@/features/modelSlice";
 import searchReducer from "@/features/searchSlice";
 import settingsReducer from "@/features/settingsSlice";
+import coverImageReducer from "@/features/coverImageSlice";
 
 export const store = configureStore({
   reducer: {
-    model: modalReducer,
     search: searchReducer,
     settings: settingsReducer,
+    coverImage: coverImageReducer,
   },
-  // devTools: true,
+  devTools: true,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
