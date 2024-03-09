@@ -323,7 +323,7 @@ export const update = privateProcedure
       _id: z.string(),
       title: z.optional(z.string()),
       content: z.optional(z.string()),
-      coverImage: z.optional(z.string()),
+      coverImage: z.optional(z.string()).nullish(),
       icon: z.optional(z.string()).nullish(),
       isPublished: z.optional(z.boolean()),
     })

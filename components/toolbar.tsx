@@ -8,16 +8,16 @@ import { ElementRef, useRef, useState } from "react";
 import useDocUpdate from "@/hooks/use-docUpdate";
 import useThrottle from "@/hooks/use-throttle";
 import TextareaAutosize from "react-textarea-autosize";
-import { useCoverImage } from "@/hooks/use-cover-image";
+import { UploadCoverImage } from "./upload-cover-image";
+import { Skeleton } from "./ui/skeleton";
 
 type ToolbarProps = {
   initialData: ModifiedDocType;
   preview?: boolean;
+  setProgress: (progress: number) => void;
 };
 
-const Toolbar = ({ initialData, preview }: ToolbarProps) => {
-  const { onOpen } = useCoverImage();
-
+const Toolbar = ({ initialData, preview, setProgress }: ToolbarProps) => {
   const inputRef = useRef<ElementRef<"textarea">>(null);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -95,15 +95,16 @@ const Toolbar = ({ initialData, preview }: ToolbarProps) => {
         )}
 
         {!initialData.coverImage && !preview && (
-          <Button
-            onClick={onOpen}
-            className="text-muted-foreground text-xs"
-            variant="outline"
-            size="sm"
-          >
-            <ImageIcon className="h-4 w-4 mr-2" />
-            Add cover
-          </Button>
+          <UploadCoverImage setProgress={setProgress}>
+            <Button
+              className="text-muted-foreground text-xs"
+              variant="outline"
+              size="sm"
+            >
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Add cover
+            </Button>
+          </UploadCoverImage>
         )}
       </div>
 
@@ -124,6 +125,21 @@ const Toolbar = ({ initialData, preview }: ToolbarProps) => {
           {initialData.title}
         </div>
       )}
+    </div>
+  );
+};
+
+Toolbar.Skeleton = function ToolbarSkeleton() {
+  return (
+    <div className="w-full mt-[48px]">
+      <Skeleton className="w-full h-56" />
+      <div className="pl-10 mt-5 md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col justify-center gap-4">
+        <Skeleton className="h-14 w-14 rounded-lg" />
+        <div className="space-y-4">
+          <Skeleton className="w-28 h-6" />
+          <Skeleton className="w-14 h-4" />
+        </div>
+      </div>
     </div>
   );
 };
