@@ -13,8 +13,7 @@ const useOrigin = () => {
     setMounted(true);
   }, []);
 
-  console.log(origin);
-  if (!mounted) return <></>;
+  if (!mounted) return "";
 
   return origin;
 };
