@@ -26,7 +26,7 @@ import DocumentList from "./documentList";
 import { trpc } from "@/trpc/client";
 import { useMediaQuery } from "usehooks-ts";
 
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 
 import { useSearch } from "@/hooks/use-search";
@@ -37,6 +37,7 @@ const Navigation = () => {
   const { onOpen } = useSearch();
   const { onOpen: openSettings } = useSettings();
 
+  const router = useRouter();
   const pathName = usePathname();
   const params = useParams();
 
@@ -51,10 +52,11 @@ const Navigation = () => {
 
   const utils = trpc.useUtils();
   const { mutateAsync } = trpc.documents.create.useMutation({
-    onSettled: () => {
+    onSuccess: (data) => {
       utils.invalidate(undefined, {
         queryKey: [["documents", "getSidebar"], { type: "query" }],
       });
+      router.push(`/documents/${data?._id}`);
     },
   });
 

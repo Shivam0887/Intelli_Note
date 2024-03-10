@@ -8,6 +8,8 @@ import Banner from "./banner";
 import Menu from "./menu";
 import Publish from "./publish";
 import { trpc } from "@/trpc/client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -16,10 +18,20 @@ interface NavbarProps {
 
 export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
   const params = useParams();
+  const router = useRouter();
 
-  const { data: document } = trpc.documents.getById.useQuery({
+  const {
+    data: document,
+    isError,
+    error,
+  } = trpc.documents.getById.useQuery({
     documentId: params.documentId as string,
   });
+
+  if (isError) {
+    toast.error(error.message);
+    setTimeout(() => router.push("/documents"), 0);
+  }
 
   if (document === undefined) {
     return (

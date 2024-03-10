@@ -54,7 +54,7 @@ const Item = ({
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
   const { mutateAsync: createDocument } = trpc.documents.create.useMutation({
-    onSettled: (data) => {
+    onSuccess: (data) => {
       utils.invalidate(undefined, {
         queryKey: [["documents", "getSidebar"], { type: "query" }],
       });
@@ -76,6 +76,7 @@ const Item = ({
       if (!expanded) {
         onExpand?.();
       }
+      router.push("/documents");
     },
   });
 

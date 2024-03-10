@@ -5,17 +5,20 @@ import { trpc } from "@/trpc/client";
 import { useUser } from "@clerk/nextjs";
 import { PlusCircle } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const DocumentsPage = () => {
   const { user } = useUser();
+  const router = useRouter();
 
   const utils = trpc.useUtils();
   const { mutateAsync } = trpc.documents.create.useMutation({
-    onSettled: () => {
+    onSuccess: (data) => {
       utils.invalidate(undefined, {
         queryKey: [["documents", "getSidebar"], { type: "query" }],
       });
+      router.push(`/documents/${data?._id}`);
     },
   });
 

@@ -13,7 +13,7 @@ import Image from "next/image";
 import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { notFound, usePathname, useRouter } from "next/navigation";
 
 type DocumentIdPageProps = {
   params: {
@@ -27,6 +27,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     []
   );
 
+  const pathname = usePathname();
   const router = useRouter();
   const { documentId } = params;
   const {
@@ -51,15 +52,24 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     );
   }
 
+  if (!document.isPublished && pathname.includes("preview")) {
+    notFound();
+  }
+
   const onChange = (content: string) => {
     throttleContent({ _id: documentId!, content });
   };
 
   return (
-    <div className="mt-[48px]">
+    <div
+      className={cn(
+        "mt-[48px]",
+        document.isPublished && pathname.includes("preview") && "mt-0"
+      )}
+    >
       <div
         className={cn(
-          "h-56 relative group/coverImage",
+          "h-56 relative group/coverImage mb-4",
           !document.coverImage && "h-32"
         )}
       >
@@ -74,14 +84,16 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               style={{ objectFit: "cover", objectPosition: "center" }}
             />
             <div className="absolute right-[20%] top-5 opacity-0 group-hover/coverImage:opacity-100 transition">
-              <UploadCoverImage
-                setProgress={setProgress}
-                documentId={document._id}
-              >
-                <Button variant="secondary" size="sm" className="text-xs">
-                  Change cover
-                </Button>
-              </UploadCoverImage>
+              {!document.isPublished && (
+                <UploadCoverImage
+                  setProgress={setProgress}
+                  documentId={document._id}
+                >
+                  <Button variant="secondary" size="sm" className="text-xs">
+                    Change cover
+                  </Button>
+                </UploadCoverImage>
+              )}
             </div>
           </>
         )}
@@ -93,8 +105,12 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
         )}
       </div>
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-        <Toolbar initialData={document} setProgress={setProgress} />
-        <Editor onChange={onChange} initialContent={document.content} />
+        <Toolbar preview initialData={document} setProgress={setProgress} />
+        <Editor
+          editable={false}
+          onChange={onChange}
+          initialContent={document.content}
+        />
       </div>
     </div>
   );
