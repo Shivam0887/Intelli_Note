@@ -60,10 +60,12 @@ const Editor = ({ initialContent, onChange, editable }: EditorProps) => {
           data
         )) as PartialBlock[];
         editor.insertBlocks(response, textCursorPositionRef.current, "after");
+        textCursorPositionRef.current = null;
+        promptRef.current = { query: "", type: "explain", lang: "English" };
       }
     }
     handleData(data);
-  }, [data, editor, textCursorPositionRef]);
+  }, [data, editor]);
 
   return (
     <div className="mb-6">

@@ -53,7 +53,11 @@ const ChatModal = () => {
             size="sm"
             className="my-2 ml-2"
             disabled={query.length === 0}
-            onClick={handleClick}
+            onClick={() => {
+              setQuery("");
+              setIsOpen(false);
+              handleClick();
+            }}
           >
             <UploadIcon className="h-4 w-4" />
           </Button>
