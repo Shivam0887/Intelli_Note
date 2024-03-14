@@ -61,7 +61,6 @@ const Editor = ({ initialContent, onChange, editable }: EditorProps) => {
         )) as PartialBlock[];
         editor.insertBlocks(response, textCursorPositionRef.current, "after");
       }
-      textCursorPositionRef.current = null;
     }
     handleData(data);
   }, [data, editor, textCursorPositionRef]);
