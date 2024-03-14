@@ -20,7 +20,7 @@ const Heading = () => {
         <span className="underline">Intelli-Note</span>
       </h1>
       <h3 className="text-base sm:text-xl md:text-2xl font-medium">
-        A collaborative workspace where better, faster work happens.
+        A workspace where better, faster work happens.
       </h3>
       {isMounted && (
         <>
