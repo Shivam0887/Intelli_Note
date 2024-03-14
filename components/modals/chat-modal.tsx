@@ -7,14 +7,19 @@ import Textarea from "react-textarea-autosize";
 import { useEffect, useState } from "react";
 import { UploadIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
 
 const ChatModal = () => {
   const { isOpen, setIsOpen, promptRef, handleClick } = useChatContext();
   const [query, setQuery] = useState("");
+  const pathname = usePathname();
+  const shouldOpen = pathname.includes("preview");
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
+        setQuery("");
+        setIsOpen(false);
         handleClick();
       }
     };
@@ -32,7 +37,7 @@ const ChatModal = () => {
   }, [query]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen && !shouldOpen} onOpenChange={setIsOpen}>
       <DialogContent className="rounded-sm" forceMount={true}>
         <div className="bg-neutral-100 dark:bg-neutral-900 rounded-sm flex items-center">
           <Textarea

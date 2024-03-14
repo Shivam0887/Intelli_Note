@@ -72,7 +72,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       toast.error(error.message);
     },
     onSettled: () => {
-      promptRef.current = { query: "", type: "Explain", lang: "English" };
+      promptRef.current = { query: "", type: "explain", lang: "English" };
       setIsOpen(false);
     },
   });
