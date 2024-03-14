@@ -10,6 +10,7 @@ import { dark } from "@clerk/themes";
 import Provider from "@/trpc/provider";
 import ReduxProvider from "@/components/providers/redux-provider";
 import ModalProvider from "@/components/providers/modal-provider";
+import ChatProvider from "@/components/providers/chat-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,8 +41,10 @@ export default function RootLayout({
             <Toaster position="top-right" />
             <Provider>
               <ReduxProvider>
-                <ModalProvider />
-                {children}
+                <ChatProvider>
+                  <ModalProvider />
+                  {children}
+                </ChatProvider>
               </ReduxProvider>
             </Provider>
           </ThemeProvider>

@@ -9,7 +9,7 @@ const MainLayout = async ({ children }: { children: React.ReactNode }) => {
   if (!user) redirect("/auth-callback?origin=documents");
 
   return (
-    <div className="relative w-full h-full flex dark:bg-[#191919] overflow-x-hidden">
+    <div className="relative w-full h-full flex dark:bg-[#191919] overflow-hidden">
       <Navigation />
       <main className="w-full flex-1 h-full overflow-y-auto">
         <SearchCommand />

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import SettingsModal from "@/components/modals/settings-modal";
+import ChatModal from "@/components/modals/chat-modal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -15,6 +16,7 @@ const ModalProvider = () => {
   return (
     <>
       <SettingsModal />
+      <ChatModal />
     </>
   );
 };
