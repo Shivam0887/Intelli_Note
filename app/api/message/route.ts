@@ -41,11 +41,11 @@ export async function POST(req: NextRequest) {
     } else if (type === "summarize") {
       prompt = `Summarize the following: \n ${query}`;
     } else {
-      prompt = `Translate the language of the following query into ${lang} language: \n ${query}`;
+      prompt = `Translate ${query} into ${lang} language`;
     }
 
     const customPrompt = `Prompt: ${prompt} \n\n
-        Generate the response using proper HTML tags and indentations that looks good even without CSS (don't include body or html tags in the response, include only required tags).
+        Generate the response in markdown format for the respective prompt
     `;
 
     // const result = (

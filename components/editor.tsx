@@ -51,12 +51,13 @@ const Editor = ({ initialContent, onChange, editable }: EditorProps) => {
 
     return () =>
       document.removeEventListener("keydown", handleTextCursor, false);
-  }, [editor]);
+  }, [editor, textCursorPositionRef, setIsOpen]);
 
   useEffect(() => {
     async function handleData(data: string | undefined) {
       if (textCursorPositionRef.current && data) {
-        const response = (await editor.tryParseHTMLToBlocks(
+        console.log({ data });
+        const response = (await editor.tryParseMarkdownToBlocks(
           data
         )) as PartialBlock[];
         editor.insertBlocks(response, textCursorPositionRef.current, "after");
@@ -65,7 +66,7 @@ const Editor = ({ initialContent, onChange, editable }: EditorProps) => {
       }
     }
     handleData(data);
-  }, [data, editor]);
+  }, [data, editor, promptRef, textCursorPositionRef]);
 
   return (
     <div className="mb-6">
